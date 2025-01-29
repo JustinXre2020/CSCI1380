@@ -4,3 +4,4 @@ package-lock.json
 p[123]
 submission
 submission.zip
+*.DS_Store

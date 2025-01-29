@@ -31,6 +31,35 @@ const path = require('path');
 
 
 function query(indexFile, args) {
+  // Step 1: Process the query string
+  const queryString = args.join(' '); // Combine all arguments into a single string
+  try {
+    // Normalize, remove stopwords, and stem the query using external scripts
+    const processedQuery = execSync(`echo "${queryString}" | ./c/process.sh | ./c/stem.js | tr "\r\n" " "`, {
+      encoding: 'utf-8',
+    }).trim();
+
+    if (!processedQuery) {
+      console.error('Error: Query processing returned an empty result.');
+      return;
+    }
+
+    // Step 2: Read and search the global index
+    const indexContent = fs.readFileSync(indexFile, 'utf-8'); // Read the global index file
+    const indexLines = indexContent.split('\n'); // Split the index into lines
+
+    // Filter lines that contain the processed query
+    const matchingLines = indexLines.filter((line) => line.includes(processedQuery));
+
+    // Step 3: Print matching lines
+    if (matchingLines.length > 0) {
+      console.log(matchingLines.join('\n')); // Print all matching lines
+    } else {
+      console.log(`No matches found for query: "${queryString}"`);
+    }
+  } catch (error) {
+    console.error('Error during query processing:', error.message);
+  }
 }
 
 const args = process.argv.slice(2); // Get command-line arguments
