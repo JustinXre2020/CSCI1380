@@ -45,7 +45,7 @@ function query(indexFile, args) {
     }
 
     // Step 2: Read and search the global index
-    const indexContent = fs.readFileSync(indexFile, 'utf-8'); // Read the global index file
+    const indexContent = fs.readFileSync(path.resolve(indexFile), 'utf-8'); // Read the global index file
     const indexLines = indexContent.split('\n'); // Split the index into lines
 
     // Filter lines that contain the processed query

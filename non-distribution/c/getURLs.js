@@ -31,18 +31,23 @@ rl.on('line', (line) => {
 
 rl.on('close', () => {
   // 3. Parse HTML using jsdom
-  const dom = new JSDOM(htmlContents.join('\n'));
-  const document = dom.window.document;
+  const contents = htmlContents.join('\n');
+  const dom = new JSDOM(contents);
 
   // 4. Find all URLs:
   //  - select all anchor (`<a>`) elements) with an `href` attribute using `querySelectorAll`.
   //  - extract the value of the `href` attribute for each anchor element.
-  const anchors = document.querySelectorAll('a[href]');
+  const urls = Array.from(dom.window.document.querySelectorAll('a'))
+      .map((link) => link.href)
+      .filter((href) => href !== '');
 
   // 5. Print each absolute URL to the console, one per line.
-  anchors.forEach((anchor) => {
-    console.log(anchor.href); // Print the absolute URL
+  const uniqueURLs = new Set();
+  urls.forEach((url) => {
+    const absoluteURL = new URL(url, baseURL).href;
+    uniqueURLs.add(absoluteURL);
   });
+  uniqueURLs.forEach((url) => console.log(url));
 });
 
 

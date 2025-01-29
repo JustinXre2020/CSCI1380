@@ -23,7 +23,6 @@ rl.on('line', (line) => {
 rl.on('close', () => {
   const plainText = convert(htmlContent.join('\n'));
   console.log(plainText);
-  return plainText;
 });
 
 
