@@ -122,8 +122,8 @@ const printMerged = (err, data) => {
   //    - Each line contains a term, followed by a pipe (`|`), followed by space-separated pairs of `url` and `freq`.
   for (const term in global) {
     const entries = global[term]
-      .map(({url, freq}) => `${url} ${freq}`)
-      .join(' ');
+        .map(({url, freq}) => `${url} ${freq}`)
+        .join(' ');
     console.log(`${term} | ${entries}`);
   }
 };

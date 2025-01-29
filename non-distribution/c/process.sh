@@ -7,9 +7,9 @@
 # Commands that will be useful: tr, iconv, grep
 
 STOPWORDS_FILE="d/stopwords.txt"
+
 tr -c '[:alpha:]' ' ' |    
 tr '[:upper:]' '[:lower:]' |              
 iconv -c -t ASCII//TRANSLIT |                            
 tr -s ' ' '\n' |                          
-grep -vFx -f "$STOPWORDS_FILE" | 
-grep -v '^$'
+grep -vFx -f "$STOPWORDS_FILE" 

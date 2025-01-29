@@ -37,9 +37,9 @@ rl.on('close', () => {
   // 4. Find all URLs:
   //  - select all anchor (`<a>`) elements) with an `href` attribute using `querySelectorAll`.
   //  - extract the value of the `href` attribute for each anchor element.
-  const urls = dom.window.document.querySelectorAll("a")
-    .map((link) => link.href)
-    .filter((href) => href !== "")
+  const urls = Array.from(dom.window.document.querySelectorAll('a'))
+      .map((link) => link.href)
+      .filter((href) => href !== '');
 
   // 5. Print each absolute URL to the console, one per line.
   const uniqueURLs = new Set();
