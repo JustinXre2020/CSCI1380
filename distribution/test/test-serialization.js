@@ -1,4 +1,4 @@
-const { util } = require("@brown-ds/distribution");
+const util = require('../util/util.js');
 
 describe("Serialization & Deserialization Tests", () => {
   // 1. Test: Serialize & Deserialize Strings
