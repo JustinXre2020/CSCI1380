@@ -77,5 +77,15 @@ distribution.all.comm.send(['sid'], {node: node, service: 'status', method: 'get
 ```
 
 # Results and Reflections
+As for the local development:
+- 1000 String execution time: `0.003491ms`
+- 1000 Function execution time: `0.0033959999999999997ms`
+- 1000 Nested Object execution time: `0.010592ms`
 
-> ...
+As for the AWS development:
+- 1000 String execution time: `0.003052ms`
+- 1000 Function execution time: `0.009804ms`
+- 1000 Nested Object execution time: `0.040138ms`
+
+It seems like for string tasks, local and AWS performs the same. However, for function and nested objects, local outperforms AWS in terms of latency.
+>       
