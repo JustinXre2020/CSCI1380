@@ -51,12 +51,8 @@ function reviver(key, value) {
   if (value && typeof value === 'object' && value.__type) {
     switch (value.__type) {
       case 'function':
-        try {
-          // Wrap the code in parentheses to handle different function formats
-          return eval('(' + value.code + ')');
-        } catch (e) {
-          return value; // Return original object if eval fails
-        }
+        // Wrap the code in parentheses to handle different function formats
+        return eval('(' + value.code + ')');
       case 'undefined':
         // Use a sentinel to track undefined values
         return UNDEFINED_SENTINEL;
