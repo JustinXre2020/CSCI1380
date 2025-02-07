@@ -10,27 +10,38 @@ const distribution = require('../../config.js');
 
 test('(1 pts) student test', () => {
   // Fill out this test case...
-    throw new Error('Not implemented');
+  const input = new Date();
+  const serialized = distribution.util.serialize(input);
+  const deserialized = distribution.util.deserialize(serialized);
+  expect(new Date(deserialized).getTime()).toBeCloseTo(input.getTime());
+});
+
+
+test('(1 pts) student test', () => {
+  const input = new Error("Test error");
+  const serialized = distribution.util.serialize(input);
+  const deserialized = distribution.util.deserialize(serialized);
+  expect(deserialized).toEqual(input);
 });
 
 
 test('(1 pts) student test', () => {
   // Fill out this test case...
-    throw new Error('Not implemented');
-});
-
-
-test('(1 pts) student test', () => {
-  // Fill out this test case...
-    throw new Error('Not implemented');
+  expect(distribution.util.deserialize(distribution.util.serialize(null))).toBe(null);
 });
 
 test('(1 pts) student test', () => {
   // Fill out this test case...
-    throw new Error('Not implemented');
+  const input = { key: undefined }; // JSON.stringify removes undefined properties
+  const serialized = distribution.util.serialize(input);
+  const deserialized = distribution.util.deserialize(serialized);
+  expect(deserialized).toEqual({});
 });
 
 test('(1 pts) student test', () => {
   // Fill out this test case...
-    throw new Error('Not implemented');
+  const input = [1, "text", true, { a: 1 }];
+  const serialized = distribution.util.serialize(input);
+  const deserialized = distribution.util.deserialize(serialized);
+  expect(deserialized).toEqual(input);
 });
