@@ -3,6 +3,7 @@ const local = distribution.local;
 const id = distribution.util.id;
 
 const config = distribution.node.config;
+console.log(distribution.node.config);
 
 test('(2 pts) local.status.get(sid)', (done) => {
   local.status.get('sid', (e, v) => {

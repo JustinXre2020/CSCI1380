@@ -1,6 +1,8 @@
 const http = require('http');
 const url = require('url');
 const log = require('../util/log');
+const { routes, status } = require('./local');
+const { deserialize, serialize } = require('../util/util');
 
 
 /*
@@ -9,13 +11,29 @@ const log = require('../util/log');
     After your node has booted, you should call the callback.
 */
 
+const service_methods_map = {
+  routes: {
+    get: routes.get,
+    put: routes.put,
+    rem: routes.rem
+  },
+  status: {
+    get: status.get,
+    spawn: status.spawn,
+    stop: status.stop
+  }
+}
 
 const start = function(callback) {
   const server = http.createServer((req, res) => {
     /* Your server will be listening for PUT requests. */
 
     // Write some code...
-
+    if (req.method !==  "PUT") {
+      // Handle other HTTP methods
+      res.writeHead(405, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Method Not Allowed" }));
+    }
 
     /*
       The path of the http request will determine the service to be used.
@@ -24,7 +42,9 @@ const start = function(callback) {
 
 
     // Write some code...
-
+    const url_ = url.parse(req.url);
+    const urls = url_.pathname.split('/');
+    const service = urls[2], service_method = urls[3];
 
     /*
 
@@ -42,10 +62,10 @@ const start = function(callback) {
   */
 
     // Write some code...
-
     let body = [];
 
     req.on('data', (chunk) => {
+      body.push(chunk.toString());
     });
 
     req.on('end', () => {
@@ -57,9 +77,25 @@ const start = function(callback) {
       */
 
       // Write some code...
+      let params = undefined;
+      try {
+        // parse JSON data
+        const data = body.join('');
+        params = deserialize(data);
 
-
-
+        // call service with given method and arguments, catch any error in between
+        const result = service_methods_map?.[service]?.[service_method]?.(...params);
+        if (result === undefined) {
+          throw new Error(`Invalid method or service: ${service}, ${service_method}`);
+        }
+        // Send a response
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ data: result }));
+      } catch (error) {
+        // Handle JSON parsing errors
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: error }));
+      }
     });
   });
 
@@ -74,14 +110,14 @@ const start = function(callback) {
   */
 
   server.listen(global.nodeConfig.port, global.nodeConfig.ip, () => {
-    log(`Server running at http://${global.nodeConfig.ip}:${global.nodeConfig.port}/`);
+    // log(`Server running at http://${global.nodeConfig.ip}:${global.nodeConfig.port}/`);
     global.distribution.node.server = server;
     callback(server);
   });
 
   server.on('error', (error) => {
     // server.close();
-    log(`Server error: ${error}`);
+    // log(`Server error: ${error}`);
     throw error;
   });
 };

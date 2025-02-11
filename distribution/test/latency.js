@@ -1,3 +1,4 @@
+const distribution = require('../../config.js');
 const util = require('../util/util.js');
 const { performance } = require('perf_hooks');
 
@@ -33,3 +34,8 @@ const end_obj = performance.now();
 console.log(`1000 String execution time: ${(end_str - start_str).toFixed(3) / itetation}ms`);
 console.log(`1000 Function execution time: ${(end_func - start_func).toFixed(3) / itetation}ms`);
 console.log(`1000 Nested Object execution time: ${(end_obj - start_obj).toFixed(3) / itetation}ms`);
+
+const url = new URL("https://example.org/abc/xyz?123");
+console.log(url.pathname.split('/'));
+
+distribution.node.start((server) => console.log("success!"));
