@@ -1,4 +1,4 @@
-const distribution = require('../../config.js');
+const distribution = require('@brown-ds/distribution')
 
 test('(2 pts) (scenario) simple callback practice', () => {
   /* Collect the result of 3 callback services in list  */
@@ -97,13 +97,14 @@ test('(2 pts) (scenario) collect errors and successful results', (done) => {
 
 test('(5 pts) (scenario) use rpc', (done) => {
   let n = 0;
-  const addOne = () => {
-    return ++n;
+  const addOne = (n, callback) => {
+    const res = n + 1;
+    callback(undefined, res);
   };
 
   const node = {ip: '127.0.0.1', port: 9009};
 
-  let addOneRPC = '?';
+  let addOneRPC = addOne;
 
   const rpcService = {
     addOne: addOneRPC,
@@ -116,21 +117,22 @@ test('(5 pts) (scenario) use rpc', (done) => {
           {node: node, service: 'status', method: 'stop'},
           callback);
     }
-
-    // Spawn the remote node.
     distribution.local.status.spawn(node, (e, v) => {
       // Install the addOne service on the remote node with the name 'addOneService'.
       distribution.local.comm.send([rpcService, 'addOneService'],
           {node: node, service: 'routes', method: 'put'}, (e, v) => {
             // Call the addOne service on the remote node. This should actually call the addOne function on this code using RPC.
-            distribution.local.comm.send([],
+            distribution.local.comm.send([n],
                 {node: node, service: 'addOneService', method: 'addOne'}, (e, v) => {
                   // Call the addOne service on the remote node again.
-                  distribution.local.comm.send([],
+                  n = v;
+                  distribution.local.comm.send([n],
                       {node: node, service: 'addOneService', method: 'addOne'}, (e, v) => {
                         // Call the addOne service on the remote node again. Since we called the addOne function three times, the result should be 3.
-                        distribution.local.comm.send([],
+                        n = v;
+                        distribution.local.comm.send([n],
                             {node: node, service: 'addOneService', method: 'addOne'}, (e, v) => {
+                              n = v;
                               try {
                                 expect(e).toBeFalsy();
                                 expect(v).toBe(3);

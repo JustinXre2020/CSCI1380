@@ -12,16 +12,19 @@ const { deserialize, serialize } = require('../util/util');
 */
 
 const service_methods_map = {
-  routes: {
-    get: routes.get,
-    put: routes.put,
-    rem: routes.rem
-  },
-  status: {
-    get: status.get,
-    spawn: status.spawn,
-    stop: status.stop
-  }
+  routes: [
+    'get',
+    'put',
+    'rem',
+  ],
+  status: [
+    'get',
+    'spawn',
+    'stop',
+  ],
+  addOneService: [
+    'addOne'
+  ]
 }
 
 const start = function(callback) {
@@ -84,15 +87,28 @@ const start = function(callback) {
         params = deserialize(data);
 
         // call service with given method and arguments, catch any error in between
-        const result = service_methods_map?.[service]?.[service_method]?.(...params);
-        if (result === undefined) {
+        // console.error(routes.get(service)?.[service_method](...params), service, service_method, params);
+        // const result = service_methods_map?.[service]?.[service_method]?.(...params);
+        // if (result === undefined && service_method in ['get']) {
+        //   throw new Error(`Invalid method or service: ${service}, ${service_method}`);
+        // }
+        // console.error(service, service_method);
+        if (!(service in service_methods_map) || !(service_methods_map[service].includes(service_method))) {
           throw new Error(`Invalid method or service: ${service}, ${service_method}`);
+        }
+        // call service with given method and arguments, catch any error in between
+        // console.error(routes.get(service), service, service_method);
+        console.error(service, service_method, params);
+        const result = routes.get(service)?.[service_method]?.(...params);
+        if (result === undefined && ['get'].includes(service_method)) {
+          throw new Error(`Invalid params: ${service}, ${service_method}`);
         }
         // Send a response
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ data: result }));
       } catch (error) {
         // Handle JSON parsing errors
+        console.error(error);
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: error }));
       }

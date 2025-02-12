@@ -45,6 +45,7 @@ function send(message, remote, callback) {
       
         res.on("end", () => {
             responseData = JSON.parse(responseData.join(''));
+            console.log(responseData, res.statusCode, message, remote, callback);
             // Handle conditions that failed
             if (res.statusCode !== 200) {
                 callback(new Error(`Request failed: ${responseData.error}`), undefined);

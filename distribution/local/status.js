@@ -28,10 +28,12 @@ status.get = function(configuration, callback) {
 
 
 status.spawn = function(configuration, callback) {
+  callback = callback || function() { };
   callback(configuration);
 };
 
 status.stop = function(callback) {
+  callback = callback || function() { };
   callback();
 };
 
